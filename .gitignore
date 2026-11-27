@@ -1,0 +1,17 @@
+/data/
+/portable_demo/
+/pages_dist/
+.venv/
+node_modules/
+/studio/frontend/dist/
+__pycache__/
+*.pyc
+*.sqlite*
+*.db*
+*.docx
+*.xlsx
+*.lnk
+*.log
+.env*
+.DS_Store
+Thumbs.db

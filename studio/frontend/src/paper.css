@@ -1,0 +1,123 @@
+:root {
+  --ease-paper:cubic-bezier(.22,.72,.24,1);
+  --ease-exit:cubic-bezier(.4,0,.7,1);
+  --field-paper:#faf8f2;
+}
+.paper-field {position:relative;min-width:0;margin:10px 0;font-size:14px;color:#384e40}
+.field-name,.date-field>label {display:block;color:#536454;font-size:13px;margin:0 0 5px}
+.paper-field .paper-trigger,.date-line {
+  display:flex;align-items:center;gap:8px;width:100%;min-width:0;padding:8px 11px;
+  background:var(--field-paper);border:1px solid #b8c2b4;border-radius:5px;color:#334f3f;text-align:left;
+}
+.paper-trigger span {overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.paper-field:has(.paper-popup) {z-index:5}
+.paper-popup {
+  position:absolute;z-index:5;inset:auto 0;top:calc(100% + 4px);min-width:0;display:flex;flex-direction:column;
+  padding:5px;background:var(--field-paper);border:1px solid #bdc9ba;border-radius:8px;
+  box-shadow:0 8px 25px #293b3024;overflow:auto;overscroll-behavior:contain;
+}
+.paper-popup[data-above=true] {top:auto;bottom:calc(100% + 4px)}
+.paper-options {position:relative;overflow:auto;overscroll-behavior:contain;min-height:0}
+.paper-popup,.paper-options,.quote-scroll {scrollbar-width:thin;scrollbar-color:#aebaab #f6f4ee}
+.paper-options [role=option] {padding:7px 9px;cursor:pointer;border-radius:3px;overflow-wrap:anywhere}
+.paper-options [aria-selected=true] {background:#e1e9dd;color:#204b32}
+.paper-options [data-active=true],.paper-options [role=option]:hover {box-shadow:inset 2px 0 #728d75;background:#edf0e6}
+.paper-popup input[type=search] {flex:none;margin-bottom:5px}
+.date-line {padding:1px 8px 1px 0}
+.date-line input {border:0;background:transparent;min-width:0;flex:1}
+.date-line button,.calendar button {white-space:nowrap}
+.date-field .paper-popup {width:min(100%,19rem)}
+.calendar-nav,.calendar-foot {display:flex;align-items:center;justify-content:space-between;gap:6px;padding:4px}
+.calendar-nav input {flex:1;width:0;min-width:0;padding:4px;text-align:center}
+.calendar-grid {display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;padding:4px}
+.calendar-grid small {text-align:center;padding:5px 0}
+.calendar .calendar-grid button {width:min(100%,32px);aspect-ratio:1;place-self:center;display:grid;place-items:center;padding:0;border-radius:50%;border:1px solid transparent;color:#36523e}
+.calendar-grid button[aria-current=date] {border-color:#96ad97}
+.calendar .calendar-grid [aria-pressed=true] {background:#31513d;color:#fff}
+.calendar button:hover {background:#e7ecdf}
+.paper-dialog[open] {animation:none}
+.paper-dialog::backdrop {background:rgb(39 53 42 / 18%);opacity:0;transition:opacity .15s var(--ease-exit)}
+.paper-dialog[data-shown=true]::backdrop {opacity:1;transition:opacity .2s var(--ease-paper)}
+@starting-style {.paper-dialog[open][data-shown=true]::backdrop {opacity:0}}
+.paper-dialog.command-panel {background:rgb(248 247 238 / 96%);backdrop-filter:blur(9px);border:1px solid #b7c0ad;border-radius:12px}
+.disclosure {display:inline-flex;align-items:center;gap:7px;font:inherit}
+.swap-slot,.reminders,.bin-list {position:relative}
+.changing-panel,.entry-tools {min-width:0;width:100%;border:0;padding:0;margin:0}
+.changing-panel[data-leaving] {position:absolute;inset:0 0 auto;pointer-events:none}
+.entry-tools[aria-busy=true] {opacity:.72;pointer-events:none}
+.reminder-row {display:grid;grid-template-columns:minmax(0,1fr) auto;width:100%;gap:12px;align-items:center}
+.reminder-row small {display:block;margin-top:4px}
+.reminder-row .reminder-title {color:var(--ink);font:inherit;text-align:left}
+.work-form .reminder-row button {border:0;background:transparent;padding:2px 0;border-radius:3px}
+.work-form .reminder-row .reminder-action {padding:4px 7px;font-size:12px;color:#536a56;white-space:nowrap;transition:opacity .15s var(--ease-paper),transform .15s var(--ease-paper),background-color .15s}
+.reminder-action i {font-style:normal;margin-inline-end:5px}
+@media(hover:hover) and (min-width:651px) {
+  .reminder-action {opacity:0;transform:translateX(4px)}
+  .reminder-row:is(:hover,:focus-within) .reminder-action {opacity:1;transform:none}
+}
+.quote-window {background:var(--field-paper);border:1px solid #c8cfbf;border-radius:7px;position:relative}
+.para-bar {display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border-bottom:1px solid #d9dfd2}
+.para-bar .paper-field {margin:0;min-width:0;flex:1;max-width:22rem}
+.para-bar .field-name {position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden}
+.para-bar>button {white-space:nowrap;border:0;border-radius:3px;padding:4px;font-size:13px}
+.para-bar .paper-trigger {padding:4px 9px}
+.quote-scroll {height:clamp(280px,52dvh,520px);overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding:12px clamp(8px,2vw,20px)}
+.quote-line {display:grid;grid-template-columns:3ch minmax(0,1fr);align-items:baseline;gap:9px;padding:6px 3px;border-radius:4px}
+.quote-line>span {position:relative;font:11px/1.6 Consolas,monospace;color:#79877a;user-select:none;font-variant-numeric:tabular-nums}
+.quote-line>span[data-marked=true]::after {content:'';display:inline-block;margin-left:2px;width:4px;height:4px;border-radius:50%;background:#69846c}
+.quote-line p {white-space:pre-wrap;overflow-wrap:anywhere;color:#2d3f34;font:17px/1.95 "Songti SC",SimSun,serif;min-height:1lh;margin:0}
+.quote-line mark {color:inherit;background:#e1eadb;text-decoration:underline;text-decoration-color:#a1b79d;text-underline-offset:.2em;animation:mark-in .22s var(--ease-paper)}
+@keyframes mark-in {from{background-color:transparent}}
+/* Keep the confirmation at the foot of the scroll window without moving the manuscript. */
+.selection-slot {position:relative;z-index:1}
+.quote-scroll:has(+ .selection-slot:not(:empty)) {scroll-padding-bottom:3.5rem}
+.selection-slot .selection-bar {position:absolute;inset:auto 0 0;background:#f4f5ec;border-top:1px solid #c9d3c5;border-radius:0 0 7px 7px}
+.quote-scroll {padding-bottom:3.5rem}
+.selection-bar {display:flex;align-items:center;justify-content:space-between;gap:10px;padding:5px 10px;color:#38513b;font-size:13px}
+.selection-bar span {min-width:0;overflow-wrap:anywhere}.selection-bar button {flex:none}
+.route-layer {position:fixed;inset:0;pointer-events:none}
+.route-layer>main {pointer-events:auto}
+.route-layer[inert]>main {pointer-events:none}
+.route-layer[data-leaving] {z-index:1}
+.header-slot {position:relative;display:grid;align-items:center;min-width:0}
+.header-slot>div {grid-area:1/1}
+.studio .masthead {transition:background-color .2s var(--ease-paper),opacity .16s var(--ease-paper)}
+.return svg {transition:transform .15s var(--ease-paper)}
+.return:hover svg {transform:translateX(-2px)}
+.page-stage:not([data-paper-turn]) .reading-pane[data-gentle][data-leaving] {visibility:visible}
+.folio-current {position:relative;width:2.4ch;min-width:2.4ch;font-variant-numeric:tabular-nums}
+.viewer-folio {white-space:nowrap;font-variant-numeric:tabular-nums}
+.work-column {animation:desk-arrival .2s var(--ease-paper)}
+.reply-pane,.mounted-photo {animation:none}
+.reading-pane[data-gentle] .reader-edge {transform-origin:top;animation:edge-arrival .22s var(--ease-paper)}
+@keyframes edge-arrival {from{transform:scaleY(.2)}}
+.delayed-status {animation:status-arrival .18s var(--ease-paper)}
+@keyframes status-arrival {from{opacity:0}}
+.studio:not([data-paper-turn]) .stage-slot {transition:opacity .18s var(--ease-paper),visibility 0s linear}
+.studio:not(.page-stage):not([data-paper-turn]) .stage-slot {opacity:0;transition:opacity .15s var(--ease-exit),visibility 0s linear .15s}
+.work-tabs button,.work-form button,.steps button,.work-row {transition:color .15s var(--ease-paper),background-color .15s var(--ease-paper),border-color .15s var(--ease-paper),scale .15s var(--ease-paper)}
+@media(hover:hover) {
+  .work-tabs button:not(:disabled):hover,.work-form button:not(:disabled):hover,.steps button:hover {border-color:#889f87}
+  .work-row:hover {background-color:#eff0e8}
+  .work-row button:hover {color:#205238}
+  .work-form .reminder-action:hover {background:#e4eadf}
+}
+.studio[data-input=keyboard] [tabindex="0"]:focus-visible {outline:2px solid var(--green);outline-offset:-2px}
+@media(prefers-reduced-motion:reduce) {
+  .studio *, .studio *::before,.studio *::after, .paper-dialog::backdrop {animation-duration:0s!important;transition-duration:0s!important;transition-delay:0s!important;scroll-behavior:auto!important}
+}
+
+.month-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:4px}
+.calendar .month-grid button {padding:5px 0;border:1px solid transparent}
+.calendar .month-grid [aria-current=date] {border-color:#96ad97}
+.calendar .month-grid [aria-pressed=true] {background:#31513d;color:white}
+input[type=checkbox] {accent-color:var(--green)}
+.paper-trigger,.date-line button,.disclosure,.album-meta {display:inline-flex;align-items:center;gap:5px}
+.fold-chevron {display:block;flex:none;transform-origin:center;transition:transform .18s var(--ease-paper)}
+.disclosure .fold-chevron {transform:none}
+[aria-expanded=true]>.fold-chevron,.album-open[aria-expanded=true] .fold-chevron,.disclosure[aria-expanded=true] .fold-chevron {transform:rotate(180deg)}
+
+.bin-bulk,.picked-quotes>div {display:flex;justify-content:space-between;align-items:center;gap:10px}
+.bin-bulk {padding:10px 0}.picked-quotes {display:block;max-height:45vh;overflow:auto}
+.collected-list {position:relative}.collected-list .work-row {white-space:pre-wrap}
+.quote-line mark {cursor:pointer}

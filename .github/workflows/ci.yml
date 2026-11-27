@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: studio/frontend/package-lock.json
+      - name: Check repository hygiene
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          import subprocess
+
+          forbidden_file = re.compile(r"\.(?:sqlite|db|docx|xlsx|lnk)[^/]*$", re.I)
+          forbidden_content = (
+              re.compile(r"C:[\\/]+" + r"Users[\\/]|/" + r"Users/", re.I),
+              re.compile("|".join(("docx_" + "whitelist", "personal_" + "history", "real_" + "whitelist")), re.I),
+          )
+          files = subprocess.check_output(["git", "ls-files", "-z"]).decode("utf-8").split("\0")
+          findings = []
+          for name in filter(None, files):
+              file = Path(name)
+              if file.is_symlink() or forbidden_file.search(name):
+                  findings.append(name)
+                  continue
+              try:
+                  content = file.read_text(encoding="utf-8")
+              except UnicodeDecodeError:
+                  continue
+              if any(rule.search(content) for rule in forbidden_content):
+                  findings.append(name)
+          if findings:
+              raise SystemExit("Repository hygiene failed:\n" + "\n".join(findings))
+          PY
+      - name: Test backend
+        run: |
+          python -m pip install -r studio/backend/requirements.txt
+          python -B -m unittest discover -s studio/tests -p "test_*.py" -v
+      - name: Build frontend
+        run: |
+          npm --prefix studio/frontend ci
+          npm --prefix studio/frontend run build
+      - name: Build and verify portable demo
+        run: |
+          LA_PYTHON=python3 npm --prefix studio/frontend run build:portable-demo
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          artifact = Path("portable_demo/life-archive-demo-v1.1.0.html")
+          data = artifact.read_bytes()
+          if not (100_000 < len(data) < 4_000_000) or re.search(rb"<script\b[^>]*\bsrc\s*=", data, re.I):
+              raise SystemExit("Invalid portable demo")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: life-archive-demo-v1.1.0
+          path: portable_demo/life-archive-demo-v1.1.0.html
+          if-no-files-found: error

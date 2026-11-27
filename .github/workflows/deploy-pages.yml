@@ -1,0 +1,45 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: ${{ !github.event.repository.private || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: studio/frontend/package-lock.json
+      - uses: actions/configure-pages@v5
+      - name: Build single-file demo
+        run: |
+          python -m pip install -r studio/backend/requirements.txt
+          npm --prefix studio/frontend ci
+          LA_PYTHON=python3 LA_PORTABLE_OUT=pages_dist/index.html npm --prefix studio/frontend run build:portable-demo
+          touch pages_dist/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: pages_dist
+      - uses: actions/deploy-pages@v4
+        id: deployment

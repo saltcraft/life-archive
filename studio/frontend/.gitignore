@@ -1,0 +1,13 @@
+# Reviewed V1.1 frontend sources and fixture browser checks.
+!/.gitignore
+!/src/motion/
+!/src/motion/motionTokens.ts
+!/src/PaperFields.tsx
+!/src/PaperDialog.tsx
+!/src/QuoteWindow.tsx
+!/src/paper.css
+!/checks/
+!/checks/v11-fixture.cjs
+!/src/core/paragraphs.ts
+!/src/entrances/scheme-a/quoteTurn.ts
+!/checks/stage-motion.cjs
